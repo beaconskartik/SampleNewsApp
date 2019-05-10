@@ -6,19 +6,13 @@ ext {
     retrofitRxJavaVersion = "2.5.0"
     rxjavaVersion = "2.2.8"
     rxandroidVersion = "2.1.1"
-    hockeyAppSdkVersion = "4.0.2"
     gsonVersion = "2.8.2"
     frescoVersion = "1.13.0"
-
-    contraintLayoutVersion = "1.1.3"
-    firebaseMessagingVersion = "17.6.0"
-    callingsdkversion = '1.5.10'
 
     compileVersion = 28
     minimumSdkVersion = 19
     targetVersion = 28
     buildToolVersion = "28.0.3"
-    callingsdkversion = '1.5.21'
 }
 
 android {
@@ -70,10 +64,7 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     implementation "io.reactivex.rxjava2:rxandroid:$rxandroidVersion"
 
-    // Required -- JUnit 4 framework
     testImplementation 'junit:junit:4.12'
-    // Optional -- Robolectric environment
-    testImplementation 'androidx.test:core:1.0.0'
-    // Optional -- Mockito framework
-    testImplementation 'org.mockito:mockito-core:1.10.19'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }

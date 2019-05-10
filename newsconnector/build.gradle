@@ -1,0 +1,48 @@
+apply plugin: 'com.android.library'
+
+ext {
+    retrofitVersion = "2.5.0"
+    retrofitRxJavaVersion = "2.5.0"
+    rxjavaVersion = "2.2.8"
+
+    compileVersion = 28
+    minimumSdkVersion = 19
+    targetVersion = 28
+    buildToolVersion = "28.0.3"
+}
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion buildToolVersion
+
+    defaultConfig {
+        minSdkVersion minimumSdkVersion
+        targetSdkVersion targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation "io.reactivex.rxjava2:rxjava:$rxjavaVersion"
+    implementation ("com.squareup.retrofit2:adapter-rxjava2:$retrofitRxJavaVersion") {
+        exclude module: 'retrofit'
+    }
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}
