@@ -12,6 +12,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import io.reactivex.Observable;
 import io.reactivex.observers.TestObserver;
+import news.agoda.com.newsconnector.models.News;
 import news.agoda.com.newsconnector.models.NewsDeserializer;
 import news.agoda.com.newsconnector.connector.RetrofitApi;
 import news.agoda.com.newsconnector.models.NewsResult;
@@ -40,8 +41,10 @@ public class NewsDataRetrofitUnitTest {
     private NewsResult createNewsResponse() {
         String jsonString = "{\"status\": \"OK\",\"copyright\": \"The New York Times Company\",\"section\": \"technology\",\"last_updated\": \"2015-08-18T10:15:06-05:00\",\"num_results\": 24,\"results\":[{\"section\": \"Business Day\",\"subsection\": \"tech\",\"title\": \"Work Policies May Be Kinder\",\"abstract\": \"Top-tier employers\",\"url\": \"http://www.nytimes.com/2015/08/18/business/work-policies-may-be-kinder-but-brutal-competition-isnt.html\",\"byline\": \"By NOAM SCHEIBER\",\"item_type\": \"Article\"}]} ";
 
-        Gson customDeserializer = new GsonBuilder().setLenient().registerTypeAdapter(NewsResult.class, new NewsDeserializer()).create();
-
+        Gson customDeserializer = new GsonBuilder()
+                .setLenient()
+                .registerTypeAdapter(News.class, new NewsDeserializer())
+                .create();
         return customDeserializer.fromJson(jsonString, NewsResult.class);
     }
 
