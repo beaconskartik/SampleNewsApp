@@ -5,6 +5,8 @@ import android.databinding.ObservableField;
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 import news.agoda.com.newsconnector.models.NewsEntity;
+import news.agoda.com.sample.Models.MediaEntityImageType;
+import news.agoda.com.sample.utils.MediaEntityUtils;
 
 public class VmDetailedNews {
 
@@ -43,7 +45,9 @@ public class VmDetailedNews {
         summary.set(newsEntity.getAbstract());
 
         if (newsEntity.isMediaEntityPresent()) {
-            imageUrlObservable.onNext(newsEntity.getMediaEntity().get(0).getUrl());
+            String url = MediaEntityUtils.getImageUrlFromMediaEntity(newsEntity.getMediaEntity(),
+                    MediaEntityImageType.largeImage);
+            imageUrlObservable.onNext(url);
         }
     }
 }

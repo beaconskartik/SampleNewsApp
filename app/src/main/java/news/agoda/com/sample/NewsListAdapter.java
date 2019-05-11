@@ -18,6 +18,8 @@ import java.util.List;
 
 import news.agoda.com.newsconnector.models.MediaEntity;
 import news.agoda.com.newsconnector.models.NewsEntity;
+import news.agoda.com.sample.Models.MediaEntityImageType;
+import news.agoda.com.sample.utils.MediaEntityUtils;
 
 public class NewsListAdapter extends ArrayAdapter {
     private static class ViewHolder {
@@ -36,9 +38,8 @@ public class NewsListAdapter extends ArrayAdapter {
         String thumbnailURL = "";
 
         if (newsEntity != null && newsEntity.isMediaEntityPresent()) {
-            List<MediaEntity> mediaEntityList = newsEntity.getMediaEntity();
-            MediaEntity mediaEntity = mediaEntityList.get(0);
-            thumbnailURL = mediaEntity.getUrl();
+            thumbnailURL = MediaEntityUtils.getImageUrlFromMediaEntity(newsEntity.getMediaEntity(),
+                    MediaEntityImageType.thumbNailImage);
         }
 
         ViewHolder viewHolder;
