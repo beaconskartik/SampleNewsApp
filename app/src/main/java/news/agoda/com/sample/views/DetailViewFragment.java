@@ -1,79 +1,102 @@
 package news.agoda.com.sample.views;
 
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
-import com.facebook.drawee.view.DraweeView;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 
+import io.reactivex.disposables.CompositeDisposable;
 import news.agoda.com.sample.R;
+import news.agoda.com.sample.databinding.FragmentDetailBinding;
+import news.agoda.com.sample.viewModels.VmDetailedNews;
+import news.agoda.com.sample.viewModels.VmLocator;
 
 public class DetailViewFragment extends Fragment {
 
-    private String storyURL = "";
+    private final static String TAG = "DetailViewFragment: ";
 
-    public static DetailViewFragment getNewInstance(String storyURL, String title, String summary, String imageUrl) {
-        DetailViewFragment detailViewFragment = new DetailViewFragment();
+    private FragmentDetailBinding fragmentDetailBinding;
+    private VmDetailedNews vmDetailedNews;
+    private CompositeDisposable compositeDisposable;
 
-        Bundle bundle = new Bundle();
-        bundle.putString("storyURL", storyURL);
-        bundle.putString("title", title);
-        bundle.putString("summary", summary);
-        bundle.putString("imageURL", imageUrl);
-
-        detailViewFragment.setArguments(bundle);
-        return detailViewFragment;
+    public static DetailViewFragment getNewInstance() {
+        return new DetailViewFragment();
     }
-
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_detail, null);
-        return view;
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        compositeDisposable = new CompositeDisposable();
+        fragmentDetailBinding = DataBindingUtil
+               .inflate(inflater, R.layout.fragment_detail, container, false);
+        vmDetailedNews = VmLocator.getInstance().getVmDetailedNews();
+        fragmentDetailBinding.setVm(vmDetailedNews);
+       return fragmentDetailBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        Bundle extras = getArguments();
-        storyURL = extras.getString("storyURL");
-        String title = extras.getString("title");
-        String summary = extras.getString("summary");
-        String imageURL = extras.getString("imageURL");
-
-
-        TextView titleView = (TextView) getView().findViewById(R.id.title);
-        DraweeView imageView = (DraweeView) getView().findViewById(R.id.news_image);
-        TextView summaryView = (TextView) getView().findViewById(R.id.summary_content);
-        Button onFullStoryClicked = (Button) getView().findViewById(R.id.full_story_link);
-
-        titleView.setText(title);
-        summaryView.setText(summary);
-
-        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                .setImageRequest(ImageRequest.fromUri(Uri.parse(imageURL)))
-                .setOldController(imageView.getController()).build();
-        imageView.setController(draweeController);
-
-        onFullStoryClicked.setOnClickListener(this::onFullStoryClicked);
+        setupImageUrlListener();
+        setupStoryUrlListener();
     }
 
-    public void onFullStoryClicked(View view) {
+    private void setupImageUrlListener() {
+        compositeDisposable.add(vmDetailedNews.getImageUrl()
+                .doOnNext(imageUrl -> {
+                    SimpleDraweeView imageView = fragmentDetailBinding.newsImage;
+                    DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                            .setImageRequest(ImageRequest.fromUri(Uri.parse(imageUrl)))
+                            .setOldController(imageView.getController()).build();
+                    imageView.setController(draweeController);
+                })
+                .subscribe(imageUrl -> {
+                    Log.d(TAG, "setupImageUrlListener:onNext " + imageUrl);
+                }, throwable -> {
+                    Log.e(TAG, "setupImageUrlListener:onError " , throwable);
+                }, () -> {
+                    Log.d(TAG, "setupImageUrlListener:onComplete ");
+                }));
+    }
+
+    private void setupStoryUrlListener() {
+        compositeDisposable.add(vmDetailedNews.getStoryUrl()
+                .doOnNext(storyUrl -> {
+                    fragmentDetailBinding.fullStoryLink.setOnClickListener(view -> onFullStoryClicked(storyUrl));
+                })
+                .subscribe(storyUrl -> {
+                    Log.d(TAG, "setupStoryUrlListener:onNext " + storyUrl);
+                }, throwable -> {
+                    Log.e(TAG, "setupStoryUrlListener:onError " , throwable);
+                }, () -> {
+                    Log.d(TAG, "setupStoryUrlListener:onComplete ");
+                }));
+    }
+
+    private void onFullStoryClicked(String storyURL) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(storyURL));
         startActivity(intent);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        compositeDisposable.clear();
+        Log.d(TAG, "onDestroyView: Called");
     }
 }

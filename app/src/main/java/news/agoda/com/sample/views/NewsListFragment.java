@@ -1,11 +1,10 @@
 package news.agoda.com.sample.views;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -13,26 +12,24 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
-import news.agoda.com.newsconnector.NewsConnector;
-import news.agoda.com.newsconnector.NewsConnectorBuilder;
 import news.agoda.com.newsconnector.models.NewsEntity;
-import news.agoda.com.newsconnector.models.NewsEntityResult;
 import news.agoda.com.sample.NewsListAdapter;
 import news.agoda.com.sample.R;
-import okhttp3.OkHttpClient;
+import news.agoda.com.sample.viewModels.VmLocator;
+import news.agoda.com.sample.viewModels.VmNews;
 
 public class NewsListFragment extends ListFragment {
+
+    private final static String TAG = "NewsListFragment: ";
 
     private List<NewsEntity> newsEntityItemList;
     private CompositeDisposable compositeDisposable;
     private IListClickListener clickListener;
+    private VmNews vmNews;
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public static NewsListFragment getNewInstance() {
+        return new NewsListFragment();
     }
 
     @Override
@@ -40,31 +37,28 @@ public class NewsListFragment extends ListFragment {
         super.onCreate(savedInstanceState);
         newsEntityItemList = new ArrayList<>();
         compositeDisposable = new CompositeDisposable();
+        vmNews = VmLocator.getInstance().getVmNews();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        loadResource();
+        loadNews();
         setupClickListener();
     }
 
-    private void loadResource() {
-        OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
-        NewsConnector connector = NewsConnectorBuilder.create(okHttpClient);
-
-        compositeDisposable.add(connector.fetchLatestNews()
-                .subscribeOn(Schedulers.io())
-                .map(NewsEntityResult::getNews)
+    private void loadNews() {
+        compositeDisposable.add(vmNews.getNewsEntityList()
                 .doOnNext(newsEntityItemList::addAll)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(data -> {
-                    NewsListAdapter adapter = new NewsListAdapter(getContext(), R.layout.list_item_news, newsEntityItemList);
+                .subscribe(newsEntityItemList -> {
+                    NewsListAdapter adapter = new NewsListAdapter(getContext(),
+                            R.layout.list_item_news, newsEntityItemList);
                     setListAdapter(adapter);
+                    Log.d(TAG, "fetchNews:onNext " + newsEntityItemList.size());
                 }, throwable -> {
-
+                    Log.e(TAG, "fetchNews:onError " , throwable);
                 }, () -> {
-
+                    Log.d(TAG, "fetchNews:onComplete ");
                 }));
     }
 
@@ -74,25 +68,19 @@ public class NewsListFragment extends ListFragment {
 
     private void setupClickListener() {
         ListView listView = getListView();
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        listView.setOnItemClickListener( (AdapterView<?> parent, View view, int position, long id)  -> {
+            if (clickListener != null) {
                 NewsEntity newsEntity = newsEntityItemList.get(position);
                 clickListener.onItemClicked(newsEntity);
             }
         });
     }
 
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        vmNews.release();
         compositeDisposable.clear();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
+        Log.d(TAG, "onDestroyView: Called");
     }
 }

@@ -1,7 +1,7 @@
 package news.agoda.com.sample;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -11,6 +11,8 @@ import android.view.View;
 import com.facebook.drawee.backends.pipeline.Fresco;
 
 import news.agoda.com.newsconnector.models.NewsEntity;
+import news.agoda.com.sample.viewModels.VmDetailedNews;
+import news.agoda.com.sample.viewModels.VmLocator;
 import news.agoda.com.sample.views.DetailViewFragment;
 import news.agoda.com.sample.views.IListClickListener;
 import news.agoda.com.sample.views.NewsListFragment;
@@ -19,8 +21,12 @@ public class MainActivity
         extends AppCompatActivity implements IListClickListener {
 
     private static final String TAG = "MainActivity:";
+    private static final String NEWS_LIST_FRAGMENT_TAG = "news_list_fragment";
+    private static final String DETAIL_FRAGMENT_TAG = "detail_fragment";
     private boolean isAppRunningInTablet = false;
-    NewsListFragment newsListFragment;
+    private NewsListFragment newsListFragment;
+    private DetailViewFragment detailViewFragment;
+    private VmDetailedNews vmDetailedNews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,25 +35,27 @@ public class MainActivity
         Fresco.initialize(this);
 
         isAppRunningInTablet = getResources().getBoolean(R.bool.isTablet);
-        if(savedInstanceState == null) {
-            newsListFragment = new NewsListFragment();
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction
-                    .add(R.id.phone_container, newsListFragment, "news_list_fragment")
-                    .addToBackStack("newsListFragment");
-            fragmentTransaction.commit();
-        } else {
-            newsListFragment = (NewsListFragment) getSupportFragmentManager().getFragment(savedInstanceState, "news_list_fragment");
-        }
+        vmDetailedNews = VmLocator.getInstance().getVmDetailedNews();
 
+        addNewsListFragment(savedInstanceState);
         setupListClickListener();
+    }
+
+    private void addNewsListFragment(Bundle savedInstanceState) {
+        if(savedInstanceState == null) {
+            newsListFragment = NewsListFragment.getNewInstance();
+            addFragment(newsListFragment, R.id.phone_container, NEWS_LIST_FRAGMENT_TAG);
+        } else {
+            newsListFragment = (NewsListFragment) getSupportFragmentManager()
+                    .getFragment(savedInstanceState, NEWS_LIST_FRAGMENT_TAG);
+        }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         //Save the fragment's instance
-        getSupportFragmentManager().putFragment(outState, "news_list_fragment", newsListFragment);
+        getSupportFragmentManager().putFragment(outState, NEWS_LIST_FRAGMENT_TAG, newsListFragment);
     }
 
     @Override
@@ -96,21 +104,27 @@ public class MainActivity
 
     @Override
     public void onItemClicked(NewsEntity newsEntity) {
-        String title = newsEntity.getTitle();
-        String newsUrl = newsEntity.getUrl();
-        String summary = newsEntity.getAbstract();
-        String imageUrl = "";
-        if (newsEntity.isMediaEntityPresent()) {
-            imageUrl = newsEntity.getMediaEntity().get(0).getUrl();
-        }
-
         showhideDetailedContainerInTablet(false);
-        int resourceId = isAppRunningInTablet ? R.id.detail_container : R.id.phone_container;
-        DetailViewFragment detailViewFragment = DetailViewFragment
-                .getNewInstance(newsUrl, title, summary, imageUrl);
+        checkAndAddDetailFragment();
+        vmDetailedNews.updateNewsEntity(newsEntity);
+    }
+
+    private void checkAndAddDetailFragment() {
+        detailViewFragment = (DetailViewFragment) getSupportFragmentManager().findFragmentByTag(DETAIL_FRAGMENT_TAG);
+        if (detailViewFragment == null) {
+            detailViewFragment = DetailViewFragment.getNewInstance();
+            int resourceId = isAppRunningInTablet ? R.id.detail_container : R.id.phone_container;
+            addFragment(detailViewFragment, resourceId, DETAIL_FRAGMENT_TAG);
+        } else if (!isAppRunningInTablet) {
+            addFragment(detailViewFragment, R.id.phone_container, DETAIL_FRAGMENT_TAG);
+        }
+    }
+
+    private void addFragment(Fragment fragment, int resourceId, String tag) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(resourceId, detailViewFragment, "detail_fragment")
-                .addToBackStack("detail_fragment");
+        fragmentTransaction.add(resourceId, fragment
+                , tag)
+                .addToBackStack(tag);
         fragmentTransaction.commit();
     }
 
