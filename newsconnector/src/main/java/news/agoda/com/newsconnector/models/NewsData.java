@@ -3,8 +3,6 @@ package news.agoda.com.newsconnector.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 public class NewsData {
 
     @SerializedName("section")
@@ -37,27 +35,6 @@ public class NewsData {
     @SerializedName("published_date")
     @Expose
     private String publishedDate;
-    @SerializedName("material_type_facet")
-    @Expose
-    private String materialTypeFacet;
-    @SerializedName("kicker")
-    @Expose
-    private String kicker;
-    @SerializedName("des_facet")
-    @Expose
-    private List<String> desFacet = null;
-    @SerializedName("org_facet")
-    @Expose
-    private List<String> orgFacet = null;
-    @SerializedName("per_facet")
-    @Expose
-    private String perFacet;
-    @SerializedName("geo_facet")
-    @Expose
-    private String geoFacet;
-    @SerializedName("multimedia")
-    @Expose
-    private String multimedia;
 
     public String getSection() {
         return section;
@@ -138,62 +115,5 @@ public class NewsData {
     public void setPublishedDate(String publishedDate) {
         this.publishedDate = publishedDate;
     }
-
-    public String getMaterialTypeFacet() {
-        return materialTypeFacet;
-    }
-
-    public void setMaterialTypeFacet(String materialTypeFacet) {
-        this.materialTypeFacet = materialTypeFacet;
-    }
-
-    public String getKicker() {
-        return kicker;
-    }
-
-    public void setKicker(String kicker) {
-        this.kicker = kicker;
-    }
-
-    public List<String> getDesFacet() {
-        return desFacet;
-    }
-
-    public void setDesFacet(List<String> desFacet) {
-        this.desFacet = desFacet;
-    }
-
-    public List<String> getOrgFacet() {
-        return orgFacet;
-    }
-
-    public void setOrgFacet(List<String> orgFacet) {
-        this.orgFacet = orgFacet;
-    }
-
-    public String getPerFacet() {
-        return perFacet;
-    }
-
-    public void setPerFacet(String perFacet) {
-        this.perFacet = perFacet;
-    }
-
-    public String getGeoFacet() {
-        return geoFacet;
-    }
-
-    public void setGeoFacet(String geoFacet) {
-        this.geoFacet = geoFacet;
-    }
-
-    public String getMultimedia() {
-        return multimedia;
-    }
-
-    public void setMultimedia(String multimedia) {
-        this.multimedia = multimedia;
-    }
-
 }
 

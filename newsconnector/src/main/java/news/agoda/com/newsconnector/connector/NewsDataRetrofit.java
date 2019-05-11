@@ -8,6 +8,7 @@ import io.reactivex.schedulers.Schedulers;
 import news.agoda.com.newsconnector.NewsDataConnector;
 import news.agoda.com.newsconnector.models.News;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -26,7 +27,10 @@ public class NewsDataRetrofit implements NewsDataConnector {
     }
 
     private RetrofitApi getApiService(OkHttpClient client) {
-        RxJava2CallAdapterFactory rxAdapter = RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io());
+
+        RxJava2CallAdapterFactory rxAdapter = RxJava2CallAdapterFactory
+                .createWithScheduler(Schedulers.io());
+
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .create();

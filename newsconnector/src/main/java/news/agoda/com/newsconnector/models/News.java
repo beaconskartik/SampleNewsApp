@@ -10,21 +10,26 @@ public class News {
     @SerializedName("status")
     @Expose
     private String status;
+
     @SerializedName("copyright")
     @Expose
     private String copyright;
+
     @SerializedName("section")
     @Expose
     private String section;
+
     @SerializedName("last_updated")
     @Expose
     private String lastUpdated;
-    @SerializedName("num_NewsDatas")
+
+    @SerializedName("num_results")
     @Expose
-    private Integer numNewsDatas;
-    @SerializedName("NewsDatas")
+    private Integer numResults;
+
+    @SerializedName("results")
     @Expose
-    private List<NewsData> NewsDatas = null;
+    private List<NewsData> results = null;
 
     public String getStatus() {
         return status;
@@ -58,19 +63,19 @@ public class News {
         this.lastUpdated = lastUpdated;
     }
 
-    public Integer getNumNewsDatas() {
-        return numNewsDatas;
+    public Integer getNumResults() {
+        return numResults;
     }
 
-    public void setNumNewsDatas(Integer numNewsDatas) {
-        this.numNewsDatas = numNewsDatas;
+    public void setNumResults(Integer numResults) {
+        this.numResults = numResults;
     }
 
-    public List<NewsData> getNewsDatas() {
-        return NewsDatas;
+    public List<NewsData> getResults() {
+        return results;
     }
 
-    public void setNewsDatas(List<NewsData> NewsDatas) {
-        this.NewsDatas = NewsDatas;
+    public void setResults(List<NewsData> results) {
+        this.results = results;
     }
 }
