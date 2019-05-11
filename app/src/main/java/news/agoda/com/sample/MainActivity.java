@@ -1,5 +1,7 @@
 package news.agoda.com.sample;
 
+import android.databinding.DataBindingUtil;
+import android.databinding.ObservableBoolean;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -11,6 +13,8 @@ import android.view.View;
 import com.facebook.drawee.backends.pipeline.Fresco;
 
 import news.agoda.com.newsconnector.models.NewsEntity;
+import news.agoda.com.sample.databinding.ActivityMainBinding;
+import news.agoda.com.sample.databinding.ActivityMainBindingSw600dpImpl;
 import news.agoda.com.sample.viewModels.VmDetailedNews;
 import news.agoda.com.sample.viewModels.VmLocator;
 import news.agoda.com.sample.views.DetailViewFragment;
@@ -21,17 +25,24 @@ public class MainActivity
         extends AppCompatActivity implements IListClickListener {
 
     private static final String TAG = "MainActivity:";
+
     private static final String NEWS_LIST_FRAGMENT_TAG = "news_list_fragment";
     private static final String DETAIL_FRAGMENT_TAG = "detail_fragment";
+
+    private ObservableBoolean showHideDetailNewsViewInTablet = new ObservableBoolean(false);
+
     private boolean isAppRunningInTablet = false;
     private NewsListFragment newsListFragment;
-    private DetailViewFragment detailViewFragment;
     private VmDetailedNews vmDetailedNews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        ActivityMainBinding activityMainBinding = DataBindingUtil
+                .setContentView(this, R.layout.activity_main);
+        activityMainBinding.setMainActivity(this);
+
+
         Fresco.initialize(this);
 
         isAppRunningInTablet = getResources().getBoolean(R.bool.isTablet);
@@ -89,28 +100,29 @@ public class MainActivity
     public void onBackPressed() {
         if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
             getSupportFragmentManager().popBackStack();
-            showhideDetailedContainerInTablet(true);
+            showHideDetailedContainerInTablet(false);
         } else {
             finish();
         }
     }
 
-    private void showhideDetailedContainerInTablet(boolean hide) {
-        if (isAppRunningInTablet) {
-            View view = findViewById(R.id.detail_container);
-            view.setVisibility(hide ? View.GONE : View.VISIBLE);
-        }
+    public ObservableBoolean getShowHideDetailNewsViewInTablet() {
+        return showHideDetailNewsViewInTablet;
+    }
+
+    private void showHideDetailedContainerInTablet(boolean show) {
+        showHideDetailNewsViewInTablet.set(show);
     }
 
     @Override
     public void onItemClicked(NewsEntity newsEntity) {
-        showhideDetailedContainerInTablet(false);
+        showHideDetailedContainerInTablet(true);
         checkAndAddDetailFragment();
         vmDetailedNews.updateNewsEntity(newsEntity);
     }
 
     private void checkAndAddDetailFragment() {
-        detailViewFragment = (DetailViewFragment) getSupportFragmentManager().findFragmentByTag(DETAIL_FRAGMENT_TAG);
+        DetailViewFragment detailViewFragment = (DetailViewFragment) getSupportFragmentManager().findFragmentByTag(DETAIL_FRAGMENT_TAG);
         if (detailViewFragment == null) {
             detailViewFragment = DetailViewFragment.getNewInstance();
             int resourceId = isAppRunningInTablet ? R.id.detail_container : R.id.phone_container;
@@ -122,8 +134,7 @@ public class MainActivity
 
     private void addFragment(Fragment fragment, int resourceId, String tag) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(resourceId, fragment
-                , tag)
+        fragmentTransaction.add(resourceId, fragment, tag)
                 .addToBackStack(tag);
         fragmentTransaction.commit();
     }
