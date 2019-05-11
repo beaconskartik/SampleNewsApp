@@ -27,13 +27,24 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
+import news.agoda.com.newsconnector.NewsDataConnector;
+import news.agoda.com.newsconnector.NewsDataConnectorBuilder;
+import news.agoda.com.newsconnector.models.News;
+import news.agoda.com.newsconnector.models.NewsData;
+import news.agoda.com.newsconnector.models.NewsDataMediaArray;
+import okhttp3.OkHttpClient;
+
 public class MainActivity
-        extends ListActivity
-        implements Callback {
+        extends ListActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private List<NewsEntity> newsItemList;
+    private List<NewsData> newsItemList;
     private Handler handler = new Handler(Looper.getMainLooper());
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +54,7 @@ public class MainActivity
 
         newsItemList = new ArrayList<>();
 
-        loadResource(this);
+        loadResource();
     }
 
     @Override
@@ -68,19 +79,42 @@ public class MainActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private void loadResource(final Callback callback) {
-        new Thread(new Runnable() {
-            @Override public void run() {
-                try {
-                    URL url = new URL("https://api.myjson.com/bins/nl6jh");
-                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                    String readStream = readStream(con.getInputStream());
-                    callback.onResult(readStream);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+    private void loadResource() {
+        OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
+        NewsDataConnector connector = NewsDataConnectorBuilder.create(okHttpClient);
+
+            compositeDisposable.add(connector.fetchLatestNews()
+                .subscribeOn(Schedulers.io())
+                .map(News::getNewsData)
+                .doOnNext(newsItemList::addAll)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(data -> {
+                    NewsListAdapter adapter = new NewsListAdapter(MainActivity.this, R.layout.list_item_news, newsItemList);
+                    setListAdapter(adapter);
+
+                    ListView listView = getListView();
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            NewsData newsEntity = newsItemList.get(position);
+                            String title = newsEntity.getTitle();
+                            Intent intent = new Intent(MainActivity.this, DetailViewActivity.class);
+                            intent.putExtra("title", title);
+                            startActivity(intent);
+                        }
+                    });
+                }, throwable -> {
+
+                }, () -> {
+
+                }));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.clear();
     }
 
     private static String readStream(InputStream in) {
@@ -96,41 +130,4 @@ public class MainActivity
         }
         return sb.toString();
     }
-
-    @Override public void onResult(final String data) {
-        handler.postDelayed(new Runnable() {
-            @Override public void run() {
-                JSONObject jsonObject;
-
-                try {
-                    jsonObject = new JSONObject(data);
-                    JSONArray resultArray = jsonObject.getJSONArray("results");
-                    for (int i = 0; i < resultArray.length(); i++) {
-                        JSONObject newsObject = resultArray.getJSONObject(i);
-                        NewsEntity newsEntity = new NewsEntity(newsObject);
-                        newsItemList.add(newsEntity);
-                    }
-                } catch (JSONException e) {
-                    Log.e(TAG, "fail to parse json string");
-                }
-
-                NewsListAdapter adapter = new NewsListAdapter(MainActivity.this, R.layout.list_item_news, newsItemList);
-                setListAdapter(adapter);
-
-                ListView listView = getListView();
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        NewsEntity newsEntity = newsItemList.get(position);
-                        String title = newsEntity.getTitle();
-                        Intent intent = new Intent(MainActivity.this, DetailViewActivity.class);
-                        intent.putExtra("title", title);
-                        startActivity(intent);
-                    }
-                });
-            }
-        }, 0);
-    }
-
 }

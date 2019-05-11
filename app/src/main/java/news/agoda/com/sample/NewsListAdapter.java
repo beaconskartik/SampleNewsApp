@@ -15,6 +15,10 @@ import com.facebook.imagepipeline.request.ImageRequest;
 
 import java.util.List;
 
+import news.agoda.com.newsconnector.models.MediaData;
+import news.agoda.com.newsconnector.models.NewsData;
+import news.agoda.com.newsconnector.models.NewsDataMediaArray;
+
 public class NewsListAdapter extends ArrayAdapter {
     private static class ViewHolder {
         TextView newsTitle;
@@ -27,11 +31,14 @@ public class NewsListAdapter extends ArrayAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        NewsEntity newsEntity = (NewsEntity) getItem(position);
-        List<MediaEntity> mediaEntityList = newsEntity.getMediaEntity();
+        NewsData newsEntity = (NewsData) getItem(position);
         String thumbnailURL = "";
-        MediaEntity mediaEntity = mediaEntityList.get(0);
-        thumbnailURL = mediaEntity.getUrl();
+
+        if (newsEntity != null && newsEntity.isMultiMediaExist()) {
+            List<MediaData> mediaEntityList = ((NewsDataMediaArray)newsEntity).getMultimedia();
+            MediaData mediaEntity = mediaEntityList.get(0);
+            thumbnailURL = mediaEntity.getUrl();
+        }
 
         ViewHolder viewHolder;
         if (convertView == null) {
