@@ -34,7 +34,7 @@ public class NewsListAdapter extends ArrayAdapter {
         NewsData newsEntity = (NewsData) getItem(position);
         String thumbnailURL = "";
 
-        if (newsEntity != null && newsEntity.isMultiMediaExist()) {
+        if (newsEntity instanceof NewsDataMediaArray) {
             List<MediaData> mediaEntityList = ((NewsDataMediaArray)newsEntity).getMultimedia();
             MediaData mediaEntity = mediaEntityList.get(0);
             thumbnailURL = mediaEntity.getUrl();

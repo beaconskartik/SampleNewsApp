@@ -101,6 +101,13 @@ public class MainActivity
                             String title = newsEntity.getTitle();
                             Intent intent = new Intent(MainActivity.this, DetailViewActivity.class);
                             intent.putExtra("title", title);
+                            intent.putExtra("storyURL", newsEntity.getUrl());
+                            intent.putExtra("summary", newsEntity.getAbstract());
+                            String url = "";
+                            if (newsEntity instanceof NewsDataMediaArray) {
+                                url = ((NewsDataMediaArray)newsEntity).getMultimedia().get(0).getUrl();
+                            }
+                            intent.putExtra("imageURL", url);
                             startActivity(intent);
                         }
                     });

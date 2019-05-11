@@ -10,7 +10,7 @@ ext {
     frescoVersion = "1.13.0"
 
     compileVersion = 28
-    minimumSdkVersion = 19
+    minimumSdkVersion = 21
     targetVersion = 28
     buildToolVersion = "28.0.3"
 }

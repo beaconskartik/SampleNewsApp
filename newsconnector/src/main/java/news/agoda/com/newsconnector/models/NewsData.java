@@ -54,9 +54,5 @@ abstract public class NewsData {
     }
 
     abstract public Object getMultimedia();
-
-    public boolean isMultiMediaExist() {
-        return getMultimedia() instanceof NewsDataMediaArray;
-    }
 }
 
