@@ -12,15 +12,15 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import io.reactivex.Observable;
 import io.reactivex.observers.TestObserver;
-import news.agoda.com.newsconnector.models.News;
-import news.agoda.com.newsconnector.models.NewsDeserializer;
+import news.agoda.com.newsconnector.models.NewsEntity;
+import news.agoda.com.newsconnector.models.NewsEntityDeserializer;
 import news.agoda.com.newsconnector.connector.RetrofitApi;
-import news.agoda.com.newsconnector.models.NewsResult;
+import news.agoda.com.newsconnector.models.NewsEntityResult;
 
 @RunWith(MockitoJUnitRunner.class)
-public class NewsDataRetrofitUnitTest {
+public class NewsEntityDataRetrofitUnitTest {
 
-    private final String TAG = "NewsDataRetrofitUnitTest";
+    private final String TAG = "NewsEntityDataRetrofitUnitTest";
 
     private final String STATUS = "OK";
     private final String COPYRIGHT = "The New York Times Company";
@@ -38,25 +38,25 @@ public class NewsDataRetrofitUnitTest {
         mockApi = Mockito.mock(RetrofitApi.class);
     }
 
-    private NewsResult createNewsResponse() {
+    private NewsEntityResult createNewsResponse() {
         String jsonString = "{\"status\": \"OK\",\"copyright\": \"The New York Times Company\",\"section\": \"technology\",\"last_updated\": \"2015-08-18T10:15:06-05:00\",\"num_results\": 24,\"results\":[{\"section\": \"Business Day\",\"subsection\": \"tech\",\"title\": \"Work Policies May Be Kinder\",\"abstract\": \"Top-tier employers\",\"url\": \"http://www.nytimes.com/2015/08/18/business/work-policies-may-be-kinder-but-brutal-competition-isnt.html\",\"byline\": \"By NOAM SCHEIBER\",\"item_type\": \"Article\"}]} ";
 
         Gson customDeserializer = new GsonBuilder()
                 .setLenient()
-                .registerTypeAdapter(News.class, new NewsDeserializer())
+                .registerTypeAdapter(NewsEntity.class, new NewsEntityDeserializer())
                 .create();
-        return customDeserializer.fromJson(jsonString, NewsResult.class);
+        return customDeserializer.fromJson(jsonString, NewsEntityResult.class);
     }
 
     @Test
     public void fetchLatestNewsUnitTest() {
 
-        NewsResult data = createNewsResponse();
+        NewsEntityResult data = createNewsResponse();
         Mockito.when(mockApi
                 .fetchLatestNews())
                 .thenReturn(Observable.just(data));
 
-        TestObserver<NewsResult> testObserver = mockApi
+        TestObserver<NewsEntityResult> testObserver = mockApi
                 .fetchLatestNews()
                 .test();
 

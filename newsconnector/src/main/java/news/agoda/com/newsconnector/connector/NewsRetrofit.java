@@ -5,25 +5,25 @@ import com.google.gson.GsonBuilder;
 
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
-import news.agoda.com.newsconnector.NewsDataConnector;
-import news.agoda.com.newsconnector.models.NewsDeserializer;
-import news.agoda.com.newsconnector.models.NewsResult;
-import news.agoda.com.newsconnector.models.News;
+import news.agoda.com.newsconnector.NewsConnector;
+import news.agoda.com.newsconnector.models.NewsEntityDeserializer;
+import news.agoda.com.newsconnector.models.NewsEntity;
+import news.agoda.com.newsconnector.models.NewsEntityResult;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class NewsDataRetrofit implements NewsDataConnector {
+public class NewsRetrofit implements NewsConnector {
 
     private final RetrofitApi apiService;
 
-    public NewsDataRetrofit(OkHttpClient client) {
+    public NewsRetrofit(OkHttpClient client) {
         apiService = getApiService(client);
     }
 
     @Override
-    public Observable<NewsResult> fetchLatestNews() {
+    public Observable<NewsEntityResult> fetchLatestNews() {
         return apiService.fetchLatestNews();
     }
 
@@ -34,7 +34,7 @@ public class NewsDataRetrofit implements NewsDataConnector {
 
         Gson customDeserializer = new GsonBuilder()
                 .setLenient()
-                .registerTypeAdapter(News.class, new NewsDeserializer())
+                .registerTypeAdapter(NewsEntity.class, new NewsEntityDeserializer())
                 .create();
 
         Gson gson = new GsonBuilder()

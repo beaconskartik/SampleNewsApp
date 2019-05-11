@@ -3,7 +3,7 @@ package news.agoda.com.newsconnector.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class MediaMetaData {
+public class MediaEntity {
 
     @SerializedName("url")
     @Expose

@@ -23,17 +23,17 @@ import java.util.List;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
-import news.agoda.com.newsconnector.NewsDataConnector;
-import news.agoda.com.newsconnector.NewsDataConnectorBuilder;
-import news.agoda.com.newsconnector.models.News;
-import news.agoda.com.newsconnector.models.NewsResult;
+import news.agoda.com.newsconnector.NewsConnector;
+import news.agoda.com.newsconnector.NewsConnectorBuilder;
+import news.agoda.com.newsconnector.models.NewsEntity;
+import news.agoda.com.newsconnector.models.NewsEntityResult;
 import okhttp3.OkHttpClient;
 
 public class MainActivity
         extends ListActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private List<News> newsItemList;
+    private List<NewsEntity> newsEntityItemList;
     private Handler handler = new Handler(Looper.getMainLooper());
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
@@ -43,7 +43,7 @@ public class MainActivity
         setContentView(R.layout.activity_main);
         Fresco.initialize(this);
 
-        newsItemList = new ArrayList<>();
+        newsEntityItemList = new ArrayList<>();
 
         loadResource();
     }
@@ -72,15 +72,15 @@ public class MainActivity
 
     private void loadResource() {
         OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
-        NewsDataConnector connector = NewsDataConnectorBuilder.create(okHttpClient);
+        NewsConnector connector = NewsConnectorBuilder.create(okHttpClient);
 
             compositeDisposable.add(connector.fetchLatestNews()
                 .subscribeOn(Schedulers.io())
-                .map(NewsResult::getNews)
-                .doOnNext(newsItemList::addAll)
+                .map(NewsEntityResult::getNews)
+                .doOnNext(newsEntityItemList::addAll)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(data -> {
-                    NewsListAdapter adapter = new NewsListAdapter(MainActivity.this, R.layout.list_item_news, newsItemList);
+                    NewsListAdapter adapter = new NewsListAdapter(MainActivity.this, R.layout.list_item_news, newsEntityItemList);
                     setListAdapter(adapter);
 
                     ListView listView = getListView();
@@ -88,15 +88,15 @@ public class MainActivity
 
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            News newsEntity = newsItemList.get(position);
+                            NewsEntity newsEntity = newsEntityItemList.get(position);
                             String title = newsEntity.getTitle();
                             Intent intent = new Intent(MainActivity.this, DetailViewActivity.class);
                             intent.putExtra("title", title);
                             intent.putExtra("storyURL", newsEntity.getUrl());
                             intent.putExtra("summary", newsEntity.getAbstract());
                             String url = "";
-                            if (newsEntity.isMediaMetaDataPresent()) {
-                                url = newsEntity.getMediaMetaData().get(3).getUrl();
+                            if (newsEntity.isMediaEntityPresent()) {
+                                url = newsEntity.getMediaEntity().get(3).getUrl();
                             }
                             intent.putExtra("imageURL", url);
                             startActivity(intent);

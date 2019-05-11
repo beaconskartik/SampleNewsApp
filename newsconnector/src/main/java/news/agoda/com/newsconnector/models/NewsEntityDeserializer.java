@@ -10,20 +10,20 @@ import com.google.gson.JsonParseException;
 
 import java.lang.reflect.Type;
 
-public class NewsDeserializer implements JsonDeserializer<News> {
+public class NewsEntityDeserializer implements JsonDeserializer<NewsEntity> {
 
     private final Gson gson = new Gson();
 
     @Override
-    public News deserialize(JsonElement json, Type typeOfT,
-                            JsonDeserializationContext context) throws JsonParseException {
+    public NewsEntity deserialize(JsonElement json, Type typeOfT,
+                                  JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = json.getAsJsonObject();
         JsonElement element = jsonObject.get("multimedia");
         if (element instanceof JsonArray) {
-            return gson.fromJson(json, NewsDataWithMediaMetaData.class);
+            return gson.fromJson(json, NewsEntityDataWithMediaEntity.class);
         }
         else {
-            return gson.fromJson(json, NewsDataWithoutMediaMetaData.class);
+            return gson.fromJson(json, NewsEntityDataWithoutMediaEntity.class);
         }
     }
 }

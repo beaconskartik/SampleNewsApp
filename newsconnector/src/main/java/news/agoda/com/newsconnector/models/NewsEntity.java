@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-abstract public class News {
+abstract public class NewsEntity {
 
     @SerializedName("section")
     @Expose
@@ -55,8 +55,8 @@ abstract public class News {
         return publishedDate;
     }
 
-    abstract public List<MediaMetaData> getMediaMetaData();
+    abstract public List<MediaEntity> getMediaEntity();
 
-    abstract public boolean isMediaMetaDataPresent();
+    abstract public boolean isMediaEntityPresent();
 }
 

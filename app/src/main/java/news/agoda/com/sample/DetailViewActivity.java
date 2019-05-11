@@ -13,7 +13,7 @@ import com.facebook.drawee.view.DraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 
 /**
- * NewsResult detail view
+ * NewsEntityResult detail view
  */
 public class DetailViewActivity extends Activity {
     private String storyURL = "";

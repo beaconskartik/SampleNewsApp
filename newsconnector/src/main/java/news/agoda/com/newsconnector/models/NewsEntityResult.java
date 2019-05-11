@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class NewsResult {
+public class NewsEntityResult {
 
     @SerializedName("status")
     @Expose
@@ -29,7 +29,7 @@ public class NewsResult {
 
     @SerializedName("results")
     @Expose
-    private List<News> newsData = null;
+    private List<NewsEntity> newsEntityData = null;
 
     public String getStatus() {
         return status;
@@ -51,7 +51,7 @@ public class NewsResult {
         return numResults;
     }
 
-    public List<News> getNews() {
-        return newsData;
+    public List<NewsEntity> getNews() {
+        return newsEntityData;
     }
 }

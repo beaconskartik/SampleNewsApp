@@ -5,19 +5,19 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-class NewsDataWithMediaMetaData extends News {
+class NewsEntityDataWithMediaEntity extends NewsEntity {
 
     @SerializedName("multimedia")
     @Expose
-    private List<MediaMetaData> multimedia = null;
+    private List<MediaEntity> multimedia = null;
 
     @Override
-    public List<MediaMetaData> getMediaMetaData() {
+    public List<MediaEntity> getMediaEntity() {
         return multimedia;
     }
 
     @Override
-    public boolean isMediaMetaDataPresent() {
+    public boolean isMediaEntityPresent() {
         return multimedia != null && multimedia.size() > 1;
     }
 }
