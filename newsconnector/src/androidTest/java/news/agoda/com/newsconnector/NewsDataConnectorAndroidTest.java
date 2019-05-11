@@ -27,14 +27,12 @@ public class NewsDataConnectorAndroidTest {
 
     private final String TAG = "NewsDataConnectorAndroidTest:";
     private NewsDataConnector client;
-    private TestScheduler testScheduler;
 
     @Before
     public void setUp() {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .build();
         client = NewsDataConnectorBuilder.create(okHttpClient);
-        testScheduler = new TestScheduler();
     }
 
     @Test
@@ -49,7 +47,7 @@ public class NewsDataConnectorAndroidTest {
     public void fetchLatestNews() {
         TestObserver<News> testObserver = client
                 .fetchLatestNews()
-                .subscribeOn(testScheduler)
+                .subscribeOn(Schedulers.io())
                 .test();
 
         testObserver.awaitTerminalEvent();
