@@ -9,7 +9,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.Material.Light"
+        android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
@@ -20,13 +20,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".DetailViewActivity"
-            android:screenOrientation="user"
-            android:autoRemoveFromRecents="true"
-            android:launchMode="singleInstance">
         </activity>
 
     </application>
