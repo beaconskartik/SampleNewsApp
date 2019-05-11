@@ -16,19 +16,19 @@ import com.facebook.imagepipeline.request.ImageRequest;
 
 import java.util.List;
 
-import news.agoda.com.newsconnector.models.MediaEntity;
 import news.agoda.com.newsconnector.models.NewsEntity;
 import news.agoda.com.sample.Models.MediaEntityImageType;
 import news.agoda.com.sample.utils.MediaEntityUtils;
 
 public class NewsListAdapter extends ArrayAdapter {
+
     private static class ViewHolder {
         TextView newsTitle;
         DraweeView imageView;
     }
 
-    public NewsListAdapter(Context context, int resource, List objects) {
-        super(context, resource, objects);
+    public NewsListAdapter(Context context, int resource, List<NewsEntity> newsEntityList) {
+        super(context, resource, newsEntityList);
     }
 
     @NonNull

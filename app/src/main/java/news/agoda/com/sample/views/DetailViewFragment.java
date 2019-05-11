@@ -42,10 +42,10 @@ public class DetailViewFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         compositeDisposable = new CompositeDisposable();
         fragmentDetailBinding = DataBindingUtil
-               .inflate(inflater, R.layout.fragment_detail, container, false);
+                .inflate(inflater, R.layout.fragment_detail, container, false);
         vmDetailedNews = VmLocator.getInstance().getVmDetailedNews();
         fragmentDetailBinding.setVm(vmDetailedNews);
-       return fragmentDetailBinding.getRoot();
+        return fragmentDetailBinding.getRoot();
     }
 
     @Override

@@ -22,7 +22,7 @@ import news.agoda.com.sample.views.IListClickListener;
 import news.agoda.com.sample.views.NewsListFragment;
 
 public class MainActivity
-        extends AppCompatActivity implements IListClickListener {
+        extends AppCompatActivity {
 
     private static final String TAG = "MainActivity:";
 
@@ -31,7 +31,7 @@ public class MainActivity
 
     private ObservableBoolean showHideDetailNewsViewInTablet = new ObservableBoolean(false);
 
-    private boolean isAppRunningInTablet = false;
+    private boolean isAppRunningInTablet ;
     private NewsListFragment newsListFragment;
     private VmDetailedNews vmDetailedNews;
 
@@ -92,7 +92,7 @@ public class MainActivity
     }
 
     private void setupListClickListener() {
-        newsListFragment.setupListClickListener(this);
+        newsListFragment.setupListClickListener(this::onItemClicked);
     }
 
     // TODO <kartik> allow back press handling for fragment as well, for now it is not needed
@@ -100,6 +100,7 @@ public class MainActivity
     public void onBackPressed() {
         if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
             getSupportFragmentManager().popBackStack();
+            // Hide the detailed fragment view as well if running in tablet.
             showHideDetailedContainerInTablet(false);
         } else {
             finish();
@@ -114,8 +115,7 @@ public class MainActivity
         showHideDetailNewsViewInTablet.set(show);
     }
 
-    @Override
-    public void onItemClicked(NewsEntity newsEntity) {
+    private void onItemClicked(NewsEntity newsEntity) {
         showHideDetailedContainerInTablet(true);
         checkAndAddDetailFragment();
         vmDetailedNews.updateNewsEntity(newsEntity);
