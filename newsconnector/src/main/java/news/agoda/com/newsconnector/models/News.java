@@ -29,53 +29,29 @@ public class News {
 
     @SerializedName("results")
     @Expose
-    private List<NewsData> results = null;
+    private List<NewsData> newsData = null;
 
     public String getStatus() {
         return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public String getCopyright() {
         return copyright;
     }
 
-    public void setCopyright(String copyright) {
-        this.copyright = copyright;
-    }
-
     public String getSection() {
         return section;
-    }
-
-    public void setSection(String section) {
-        this.section = section;
     }
 
     public String getLastUpdated() {
         return lastUpdated;
     }
 
-    public void setLastUpdated(String lastUpdated) {
-        this.lastUpdated = lastUpdated;
-    }
-
     public Integer getNumResults() {
         return numResults;
     }
 
-    public void setNumResults(Integer numResults) {
-        this.numResults = numResults;
-    }
-
-    public List<NewsData> getResults() {
-        return results;
-    }
-
-    public void setResults(List<NewsData> results) {
-        this.results = results;
+    public List<NewsData> getNewsData() {
+        return newsData;
     }
 }

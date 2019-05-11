@@ -9,10 +9,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.List;
+
 import io.reactivex.observers.TestObserver;
 import io.reactivex.schedulers.Schedulers;
-import io.reactivex.schedulers.TestScheduler;
 import news.agoda.com.newsconnector.models.News;
+import news.agoda.com.newsconnector.models.NewsDataMediaArray;
 import okhttp3.OkHttpClient;
 
 import static org.junit.Assert.assertEquals;
@@ -52,15 +54,20 @@ public class NewsDataConnectorAndroidTest {
 
         testObserver.awaitTerminalEvent();
 
+        List<News> datas = testObserver.values();
+
         testObserver
                 .assertNoErrors()
                 .assertSubscribed()
                 .assertValue(val -> TextUtils.equals(val.getStatus(), "OK"))
                 .assertValue(val -> TextUtils.equals(val.getCopyright(), "Copyright (c) 2015 The New York Times Company. All Rights Reserved."))
-                .assertValue(val -> val.getResults() != null)
-                .assertValue(val -> val.getResults().size() > 0)
-                .assertValue(val -> val.getResults().size() == 24)
-                .assertValue(val -> TextUtils.equals(val.getResults().get(0).getTitle(), "Work Policies May Be Kinder, but Brutal Competition Isn’t"));
+                .assertValue(val -> val.getNewsData() != null)
+                .assertValue(val -> val.getNewsData().size() > 0)
+                .assertValue(val -> val.getNewsData().size() == 24)
+                .assertValue(val -> TextUtils.equals(val.getNewsData().get(0).getTitle(), "Work Policies May Be Kinder, but Brutal Competition Isn’t"))
+                .assertValue(val -> ((NewsDataMediaArray)val.getNewsData().get(0)).getMultimedia().get(0).getUrl().equals("http://static01.nyt.com/images/2015/08/18/business/18EMPLOY/18EMPLOY-thumbStandard.jpg"))
+                .assertValue(val -> ((NewsDataMediaArray)val.getNewsData().get(0)).getMultimedia().get(0).getHeight() == 75)
+                .assertValue(val -> ((NewsDataMediaArray)val.getNewsData().get(0)).getMultimedia().get(0).getWidth() == 75);
 
         testObserver.dispose();
     }
