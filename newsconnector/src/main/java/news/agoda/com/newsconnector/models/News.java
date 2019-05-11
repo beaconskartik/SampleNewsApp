@@ -5,53 +5,58 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class News {
-
-    @SerializedName("status")
-    @Expose
-    private String status;
-
-    @SerializedName("copyright")
-    @Expose
-    private String copyright;
+abstract public class News {
 
     @SerializedName("section")
     @Expose
     private String section;
 
-    @SerializedName("last_updated")
+    @SerializedName("title")
     @Expose
-    private String lastUpdated;
+    private String title;
 
-    @SerializedName("num_results")
+    @SerializedName("abstract")
     @Expose
-    private Integer numResults;
+    private String _abstract;
 
-    @SerializedName("results")
+    @SerializedName("url")
     @Expose
-    private List<NewsData> newsData = null;
+    private String url;
 
-    public String getStatus() {
-        return status;
-    }
+    @SerializedName("byline")
+    @Expose
+    private String byline;
 
-    public String getCopyright() {
-        return copyright;
-    }
+    @SerializedName("published_date")
+    @Expose
+    private String publishedDate;
 
     public String getSection() {
         return section;
     }
 
-    public String getLastUpdated() {
-        return lastUpdated;
+    public String getTitle() {
+        return title;
     }
 
-    public Integer getNumResults() {
-        return numResults;
+    public String getAbstract() {
+        return _abstract;
     }
 
-    public List<NewsData> getNewsData() {
-        return newsData;
+    public String getUrl() {
+        return url;
     }
+
+    public String getByline() {
+        return byline;
+    }
+
+    public String getPublishedDate() {
+        return publishedDate;
+    }
+
+    abstract public List<MediaMetaData> getMediaMetaData();
+
+    abstract public boolean isMediaMetaDataPresent();
 }
+
