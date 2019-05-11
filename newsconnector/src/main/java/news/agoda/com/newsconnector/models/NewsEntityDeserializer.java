@@ -20,10 +20,10 @@ public class NewsEntityDeserializer implements JsonDeserializer<NewsEntity> {
         JsonObject jsonObject = json.getAsJsonObject();
         JsonElement element = jsonObject.get("multimedia");
         if (element instanceof JsonArray) {
-            return gson.fromJson(json, NewsEntityDataWithMediaEntity.class);
+            return gson.fromJson(json, NewsEntityWithMediaEntity.class);
         }
         else {
-            return gson.fromJson(json, NewsEntityDataWithoutMediaEntity.class);
+            return gson.fromJson(json, NewsEntityWithoutMediaEntity.class);
         }
     }
 }

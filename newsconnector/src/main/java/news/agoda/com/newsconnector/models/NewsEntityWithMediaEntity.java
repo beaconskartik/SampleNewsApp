@@ -3,22 +3,21 @@ package news.agoda.com.newsconnector.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
 
-class NewsEntityDataWithoutMediaEntity extends NewsEntity {
+class NewsEntityWithMediaEntity extends NewsEntity {
 
     @SerializedName("multimedia")
     @Expose
-    private String multimedia = "";
+    private List<MediaEntity> multimedia = null;
 
     @Override
     public List<MediaEntity> getMediaEntity() {
-        return new ArrayList<>();
+        return multimedia;
     }
 
     @Override
     public boolean isMediaEntityPresent() {
-        return false;
+        return multimedia != null && multimedia.size() > 0;
     }
 }
