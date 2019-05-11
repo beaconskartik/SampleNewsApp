@@ -28,6 +28,7 @@ public class NewsListFragment extends ListFragment {
 
     private List<NewsEntity> newsEntityItemList;
     private CompositeDisposable compositeDisposable;
+    private IListClickListener clickListener;
 
     @Override
     public void onAttach(Context context) {
@@ -45,6 +46,7 @@ public class NewsListFragment extends ListFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         loadResource();
+        setupClickListener();
     }
 
     private void loadResource() {
@@ -59,33 +61,27 @@ public class NewsListFragment extends ListFragment {
                 .subscribe(data -> {
                     NewsListAdapter adapter = new NewsListAdapter(getContext(), R.layout.list_item_news, newsEntityItemList);
                     setListAdapter(adapter);
-
-                    ListView listView = getListView();
-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            NewsEntity newsEntity = newsEntityItemList.get(position);
-                            String title = newsEntity.getTitle();
-                            String newsUrl = newsEntity.getUrl();
-                            String summary = newsEntity.getAbstract();
-                            String imageUrl = "";
-                            if (newsEntity.isMediaEntityPresent()) {
-                                imageUrl = newsEntity.getMediaEntity().get(3).getUrl();
-                            }
-                            DetailViewFragment detailViewFragment = DetailViewFragment
-                                    .getNewInstance(newsUrl, title, summary, imageUrl);
-                            FragmentTransaction fragmentTransaction = getActivity()
-                                    .getSupportFragmentManager().beginTransaction();
-                            fragmentTransaction.add(R.id.phone_container, detailViewFragment).addToBackStack("detail_fragment");;
-                            fragmentTransaction.commit();
-                        }
-                    });
                 }, throwable -> {
 
                 }, () -> {
 
                 }));
+    }
+
+    public void setupListClickListener(IListClickListener listClickListener) {
+        clickListener = listClickListener;
+    }
+
+    private void setupClickListener() {
+        ListView listView = getListView();
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                NewsEntity newsEntity = newsEntityItemList.get(position);
+                clickListener.onItemClicked(newsEntity);
+            }
+        });
     }
 
 

@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -57,6 +58,7 @@ public class DetailViewFragment extends Fragment {
         TextView titleView = (TextView) getView().findViewById(R.id.title);
         DraweeView imageView = (DraweeView) getView().findViewById(R.id.news_image);
         TextView summaryView = (TextView) getView().findViewById(R.id.summary_content);
+        Button onFullStoryClicked = (Button) getView().findViewById(R.id.full_story_link);
 
         titleView.setText(title);
         summaryView.setText(summary);
@@ -65,6 +67,8 @@ public class DetailViewFragment extends Fragment {
                 .setImageRequest(ImageRequest.fromUri(Uri.parse(imageURL)))
                 .setOldController(imageView.getController()).build();
         imageView.setController(draweeController);
+
+        onFullStoryClicked.setOnClickListener(this::onFullStoryClicked);
     }
 
     public void onFullStoryClicked(View view) {

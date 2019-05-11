@@ -1,6 +1,7 @@
 package news.agoda.com.sample;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -9,12 +10,17 @@ import android.view.View;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 
+import news.agoda.com.newsconnector.models.NewsEntity;
+import news.agoda.com.sample.views.DetailViewFragment;
+import news.agoda.com.sample.views.IListClickListener;
 import news.agoda.com.sample.views.NewsListFragment;
 
 public class MainActivity
-        extends AppCompatActivity {
+        extends AppCompatActivity implements IListClickListener {
 
     private static final String TAG = "MainActivity:";
+    private boolean isAppRunningInTablet = false;
+    NewsListFragment newsListFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,13 +28,26 @@ public class MainActivity
         setContentView(R.layout.activity_main);
         Fresco.initialize(this);
 
-        View v = findViewById(R.id.phone_container);
-        if(v != null && savedInstanceState == null) {
-            NewsListFragment newsListFragment = new NewsListFragment();
+        isAppRunningInTablet = getResources().getBoolean(R.bool.isTablet);
+        if(savedInstanceState == null) {
+            newsListFragment = new NewsListFragment();
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.add(R.id.phone_container, newsListFragment).addToBackStack("news_list_fragment");
+            fragmentTransaction
+                    .add(R.id.phone_container, newsListFragment, "news_list_fragment")
+                    .addToBackStack("newsListFragment");
             fragmentTransaction.commit();
+        } else {
+            newsListFragment = (NewsListFragment) getSupportFragmentManager().getFragment(savedInstanceState, "news_list_fragment");
         }
+
+        setupListClickListener();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //Save the fragment's instance
+        getSupportFragmentManager().putFragment(outState, "news_list_fragment", newsListFragment);
     }
 
     @Override
@@ -53,14 +72,46 @@ public class MainActivity
         return super.onOptionsItemSelected(item);
     }
 
+    private void setupListClickListener() {
+        newsListFragment.setupListClickListener(this);
+    }
+
     // TODO <kartik> allow back press handling for fragment as well, for now it is not needed
     @Override
     public void onBackPressed() {
         if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
             getSupportFragmentManager().popBackStack();
+            showhideDetailedContainerInTablet(true);
         } else {
             finish();
         }
+    }
+
+    private void showhideDetailedContainerInTablet(boolean hide) {
+        if (isAppRunningInTablet) {
+            View view = findViewById(R.id.detail_container);
+            view.setVisibility(hide ? View.GONE : View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onItemClicked(NewsEntity newsEntity) {
+        String title = newsEntity.getTitle();
+        String newsUrl = newsEntity.getUrl();
+        String summary = newsEntity.getAbstract();
+        String imageUrl = "";
+        if (newsEntity.isMediaEntityPresent()) {
+            imageUrl = newsEntity.getMediaEntity().get(0).getUrl();
+        }
+
+        showhideDetailedContainerInTablet(false);
+        int resourceId = isAppRunningInTablet ? R.id.detail_container : R.id.phone_container;
+        DetailViewFragment detailViewFragment = DetailViewFragment
+                .getNewInstance(newsUrl, title, summary, imageUrl);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.add(resourceId, detailViewFragment, "detail_fragment")
+                .addToBackStack("detail_fragment");
+        fragmentTransaction.commit();
     }
 
     @Override
