@@ -28,8 +28,6 @@ public class VmNews {
         connector = NewsConnectorBuilder.create(okHttpClient);
         compositeDisposable = new CompositeDisposable();
         newsEntityListObservable = BehaviorSubject.create();
-
-        fetchNews();
     }
 
     private void fetchNews() {
@@ -49,6 +47,9 @@ public class VmNews {
     }
 
     public Observable<List<NewsEntity>> getNewsEntityList () {
+         if (!newsEntityListObservable.hasValue()) {
+                fetchNews();
+         }
         return newsEntityListObservable;
     }
 

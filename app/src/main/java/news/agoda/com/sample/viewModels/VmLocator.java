@@ -22,7 +22,7 @@ public class VmLocator {
 
     public VmNews getVmNews() {
         if (vmNews == null) {
-            vmNews = new VmNews();
+            vmNews =  new VmNews();
         }
         return vmNews;
     }

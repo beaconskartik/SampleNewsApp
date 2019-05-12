@@ -9,7 +9,7 @@ import news.agoda.com.sample.Models.MediaEntityImageType;
 
 public final class MediaEntityUtils {
 
-    public  static String getImageUrlFromMediaEntity(List<MediaEntity> mediaEntityList,
+    public static String getImageUrlFromMediaEntity(List<MediaEntity> mediaEntityList,
                                                      MediaEntityImageType type) {
         if (type == MediaEntityImageType.thumbNailImage) {
             for (MediaEntity mediaEntity : mediaEntityList) {
