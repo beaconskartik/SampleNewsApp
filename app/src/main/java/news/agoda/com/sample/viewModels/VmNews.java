@@ -15,6 +15,7 @@ import news.agoda.com.newsconnector.NewsConnector;
 import news.agoda.com.newsconnector.NewsConnectorBuilder;
 import news.agoda.com.newsconnector.models.NewsEntity;
 import news.agoda.com.newsconnector.models.NewsEntityResult;
+import news.agoda.com.sample.views.NetworkChangeProvider;
 import okhttp3.OkHttpClient;
 
 public class VmNews {
@@ -87,7 +88,6 @@ public class VmNews {
     public void release() {
         fetchNewsCompositeDisposable.clear();
         compositeDisposable.clear();
-        networkChangeProvider.release();
         Log.d(TAG, "release: Called");
     }
 }

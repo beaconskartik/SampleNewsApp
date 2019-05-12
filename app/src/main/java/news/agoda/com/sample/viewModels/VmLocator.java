@@ -1,5 +1,7 @@
 package news.agoda.com.sample.viewModels;
 
+import news.agoda.com.sample.views.NetworkChangeProvider;
+
 public class VmLocator {
 
     private static VmLocator vmLocator;

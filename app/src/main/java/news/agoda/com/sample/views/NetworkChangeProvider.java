@@ -1,4 +1,4 @@
-package news.agoda.com.sample.viewModels;
+package news.agoda.com.sample.views;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,7 +15,7 @@ public class NetworkChangeProvider {
     private final Context context;
     private final NetworkChangeBroadcastReceiver networkChangeBroadcastReceiver;
 
-    public NetworkChangeProvider(Context context) {
+    NetworkChangeProvider(Context context) {
         this.context = context;
         this.networkChangeBroadcastReceiver = new NetworkChangeBroadcastReceiver();
         registerNetworkChangeBroadcast();
@@ -30,7 +30,7 @@ public class NetworkChangeProvider {
         context.unregisterReceiver(networkChangeBroadcastReceiver);
     }
 
-    Observable<Boolean> isNetworkConnected() {
+    public Observable<Boolean> isNetworkConnected() {
         return networkChangeBroadcastReceiver
                 .networkChangeObservable
                 .distinctUntilChanged();

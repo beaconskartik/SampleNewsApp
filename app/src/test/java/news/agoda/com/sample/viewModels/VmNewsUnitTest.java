@@ -18,6 +18,7 @@ import io.reactivex.observers.TestObserver;
 import io.reactivex.subjects.BehaviorSubject;
 import news.agoda.com.newsconnector.models.MediaEntity;
 import news.agoda.com.newsconnector.models.NewsEntity;
+import news.agoda.com.sample.views.NetworkChangeProvider;
 
 @RunWith(MockitoJUnitRunner.class)
 public class VmNewsUnitTest extends TestCase {
