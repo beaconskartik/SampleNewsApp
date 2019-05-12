@@ -48,6 +48,8 @@ public class VmDetailedNews {
             String url = MediaEntityUtils.getImageUrlFromMediaEntity(newsEntity.getMediaEntity(),
                     MediaEntityImageType.largeImage);
             imageUrlObservable.onNext(url);
+        } else {
+            imageUrlObservable.onNext(" ");
         }
     }
 }

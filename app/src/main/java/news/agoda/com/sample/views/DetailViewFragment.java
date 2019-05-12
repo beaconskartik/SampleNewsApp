@@ -56,7 +56,8 @@ public class DetailViewFragment extends Fragment {
     }
 
     private void setupImageUrlListener() {
-        compositeDisposable.add(vmDetailedNews.getImageUrl()
+        compositeDisposable.add(vmDetailedNews
+                .getImageUrl()
                 .doOnNext(imageUrl -> {
                     SimpleDraweeView imageView = fragmentDetailBinding.newsImage;
                     DraweeController draweeController = Fresco.newDraweeControllerBuilder()
