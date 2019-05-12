@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.internal.util.reflection.FieldSetter;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -22,14 +23,14 @@ import news.agoda.com.newsconnector.models.NewsEntity;
 public class VmNewsUnitTest extends TestCase {
 
     private VmNews vmNews;
-    private List<NewsEntity> newsEntityList;
-    private BehaviorSubject<List<NewsEntity>> newsEntityListObservable;
+    @Mock private NetworkChangeProvider networkChangeProvider;
 
     @Before
     public void setup() throws NoSuchFieldException {
+        networkChangeProvider = Mockito.mock(NetworkChangeProvider.class);
+        vmNews = VmLocator.getInstance().getVmNews(networkChangeProvider);
 
-        vmNews = VmLocator.getInstance().getVmNews();
-        newsEntityListObservable = BehaviorSubject.create();
+        BehaviorSubject<List<NewsEntity>> newsEntityListObservable = BehaviorSubject.create();
         FieldSetter.setField(vmNews, vmNews.getClass().getDeclaredField("newsEntityListObservable"),
                 newsEntityListObservable);
 
@@ -45,7 +46,7 @@ public class VmNewsUnitTest extends TestCase {
         Mockito.when(newsEntity.getMediaEntity()).thenReturn(mediaEntityList);
 
         Mockito.when(mediaEntity.getUrl()).thenReturn("thumbnailURL1");
-        newsEntityList = Collections.singletonList(newsEntity);
+        List<NewsEntity> newsEntityList = Collections.singletonList(newsEntity);
 
         newsEntityListObservable.onNext(newsEntityList);
     }
@@ -71,7 +72,13 @@ public class VmNewsUnitTest extends TestCase {
     public void testRelease() throws NoSuchFieldException {
         CompositeDisposable compositeDisposable = Mockito.mock(CompositeDisposable.class);
         FieldSetter.setField(vmNews, vmNews.getClass().getDeclaredField("compositeDisposable"), compositeDisposable);
+
+        CompositeDisposable fetchNewsCompositeDisposable = Mockito.mock(CompositeDisposable.class);
+        FieldSetter.setField(vmNews, vmNews.getClass().getDeclaredField("fetchNewsCompositeDisposable"),
+                fetchNewsCompositeDisposable);
+
         vmNews.release();
+        Mockito.verify(fetchNewsCompositeDisposable).clear();
         Mockito.verify(compositeDisposable).clear();
     }
 }

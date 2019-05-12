@@ -1,4 +1,4 @@
-package news.agoda.com.sample;
+package news.agoda.com.sample.views;
 
 import android.databinding.DataBindingUtil;
 import android.databinding.ObservableBoolean;
@@ -13,6 +13,7 @@ import android.view.View;
 import com.facebook.drawee.backends.pipeline.Fresco;
 
 import news.agoda.com.newsconnector.models.NewsEntity;
+import news.agoda.com.sample.R;
 import news.agoda.com.sample.databinding.ActivityMainBinding;
 import news.agoda.com.sample.databinding.ActivityMainBindingSw600dpImpl;
 import news.agoda.com.sample.viewModels.VmDetailedNews;

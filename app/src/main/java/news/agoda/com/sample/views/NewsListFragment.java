@@ -14,8 +14,8 @@ import java.util.List;
 
 import io.reactivex.disposables.CompositeDisposable;
 import news.agoda.com.newsconnector.models.NewsEntity;
-import news.agoda.com.sample.NewsListAdapter;
 import news.agoda.com.sample.R;
+import news.agoda.com.sample.viewModels.NetworkChangeProvider;
 import news.agoda.com.sample.viewModels.VmLocator;
 import news.agoda.com.sample.viewModels.VmNews;
 
@@ -37,7 +37,8 @@ public class NewsListFragment extends ListFragment {
         super.onCreate(savedInstanceState);
         newsEntityItemList = new ArrayList<>();
         compositeDisposable = new CompositeDisposable();
-        vmNews = VmLocator.getInstance().getVmNews();
+        NetworkChangeProvider networkChangeProvider = new NetworkChangeProvider(getContext());
+        vmNews = VmLocator.getInstance().getVmNews(networkChangeProvider);
     }
 
     @Override

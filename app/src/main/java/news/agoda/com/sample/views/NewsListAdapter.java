@@ -1,4 +1,4 @@
-package news.agoda.com.sample;
+package news.agoda.com.sample.views;
 
 import android.content.Context;
 import android.net.Uri;
@@ -18,6 +18,7 @@ import java.util.List;
 
 import news.agoda.com.newsconnector.models.NewsEntity;
 import news.agoda.com.sample.Models.MediaEntityImageType;
+import news.agoda.com.sample.R;
 import news.agoda.com.sample.utils.MediaEntityUtils;
 
 public class NewsListAdapter extends ArrayAdapter {

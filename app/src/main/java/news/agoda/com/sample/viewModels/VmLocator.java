@@ -20,9 +20,9 @@ public class VmLocator {
 
     private VmLocator() { }
 
-    public VmNews getVmNews() {
+    public VmNews getVmNews(NetworkChangeProvider networkChangeProvider) {
         if (vmNews == null) {
-            vmNews =  new VmNews();
+            vmNews =  new VmNews(networkChangeProvider);
         }
         return vmNews;
     }
