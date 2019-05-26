@@ -13,7 +13,7 @@ ext {
 
 android {
     compileSdkVersion 28
-    buildToolsVersion buildToolVersion
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         minSdkVersion minimumSdkVersion
@@ -31,28 +31,24 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = '1.8'
-        targetCompatibility = '1.8'
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "io.reactivex.rxjava2:rxjava:$rxjavaVersion"
-    implementation ("com.squareup.retrofit2:adapter-rxjava2:$retrofitRxJavaVersion") {
+    implementation("com.squareup.retrofit2:adapter-rxjava2:$retrofitRxJavaVersion") {
         exclude module: 'retrofit'
     }
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
-
     //Logging Network Calls
     implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
-
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.13.0'
     testImplementation 'org.mockito:mockito-inline:2.13.0'
-
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }

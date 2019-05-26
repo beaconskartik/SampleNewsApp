@@ -17,11 +17,11 @@ ext {
 
 android {
 
-    compileSdkVersion compileVersion
-    buildToolsVersion buildToolVersion
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
-        applicationId "news.agoda.com.technewssample"
+        applicationId "news.beacons.com.technewssample"
         vectorDrawables.useSupportLibrary = true
         minSdkVersion minimumSdkVersion
         targetSdkVersion targetVersion
@@ -50,28 +50,23 @@ android {
 }
 
 dependencies {
-
     implementation "com.android.support:support-annotations:$supportLibVersion"
     implementation "com.android.support:appcompat-v7:$supportLibVersion"
     implementation "com.android.support:design:$supportLibVersion"
     implementation "com.android.support:cardview-v7:$supportLibVersion"
-
     implementation "com.facebook.fresco:fresco:$frescoVersion"
     implementation "com.google.code.gson:gson:$gsonVersion"
     implementation "io.reactivex.rxjava2:rxjava:$rxjavaVersion"
-    implementation ("com.squareup.retrofit2:adapter-rxjava2:$retrofitRxJavaVersion") {
+    implementation("com.squareup.retrofit2:adapter-rxjava2:$retrofitRxJavaVersion") {
         exclude module: 'retrofit'
     }
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     implementation "io.reactivex.rxjava2:rxandroid:$rxandroidVersion"
-
     // Adding dependency of newsconnector
     implementation project(path: ':newsconnector')
-
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.13.0'
     testImplementation 'org.mockito:mockito-inline:2.13.0'
-
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }

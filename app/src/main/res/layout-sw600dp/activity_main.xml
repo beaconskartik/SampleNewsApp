@@ -5,13 +5,13 @@
 
     <data>
         <import type="android.view.View" />
-        <variable name="mainActivity" type="news.agoda.com.sample.views.MainActivity" />
+        <variable name="mainActivity" type="news.beacons.com.views.MainActivity" />
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".views.MainActivity" >
+        tools:context="news.beacons.com.views.MainActivity" >
 
         <LinearLayout
             android:layout_width="match_parent"
