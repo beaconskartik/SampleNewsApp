@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?><!-- Layout for Pre-call (outgoing video, connecting video) -->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View" />
+        <variable name="mainActivity" type="news.beacons.com.views.MainActivity" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="news.beacons.com.views.MainActivity" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:id="@+id/phone_container"
+                android:layout_height="match_parent"
+                android:minWidth="100dp"
+                android:layout_width="0dp"
+                android:layout_weight="1" >
+            </FrameLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:visibility="@{mainActivity.showHideDetailNewsViewInTablet ? View.VISIBLE : View.GONE}"
+                android:background="@drawable/place_holder"/>
+
+            <FrameLayout
+                android:id="@+id/detail_container"
+                android:visibility="@{mainActivity.showHideDetailNewsViewInTablet ? View.VISIBLE : View.GONE}"
+                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="2" >
+            </FrameLayout>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>
